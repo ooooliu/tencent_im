@@ -1,0 +1,14 @@
+{
+    "name": "ooooliu/pay",
+    "description": "cloud.tencent for im",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lyn",
+            "email": "yan252079467@vip.qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
