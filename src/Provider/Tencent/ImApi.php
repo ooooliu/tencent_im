@@ -37,16 +37,16 @@ class ImApi extends ImBaseApi implements ProviderInterface
 
     /**
      * 账户导入
-     * @param $identifier
+     * @param $account
      * @param $nick_name
      * @param $face_url
      * @return mixed|string
      */
-    public function registerUser($identifier, $nick_name, $face_url)
+    public function registerUser($account, $nick_name, $face_url)
     {
         //构造新消息
         $msg = [
-            'Identifier' => $identifier,
+            'Identifier' => $account,
             'Nick' => $nick_name,
             'FaceUrl' => $face_url
         ];
@@ -54,6 +54,29 @@ class ImApi extends ImBaseApi implements ProviderInterface
         $data = json_encode($msg);
 
         $ret = parent::api('im_open_login_svc', 'account_import', $data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+
+    /**
+     * 批量账户导入
+     * @param array $accounts
+     * @return mixed|string
+     * @throws \Exception
+     */
+    public function multRegisterUser($accounts = [])
+    {
+        if(empty($accounts) || !is_array($accounts)){
+            throw new \Exception('Account is wrong');
+        }
+
+        $msg = [
+            'Accounts' => $accounts
+        ];
+        //将消息序列化为json串
+        $data = json_encode($msg);
+
+        $ret = parent::api('im_open_login_svc', 'multiaccount_import', $data);
         $ret = json_decode($ret, true);
         return $ret;
     }
