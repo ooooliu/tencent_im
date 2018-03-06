@@ -9,7 +9,9 @@
 namespace Ooooliu\Im\Provider\Tencent;
 
 
-class ImApi extends ImBaseApi
+use Ooooliu\Im\Contracts\ProviderInterface;
+
+class ImApi extends ImBaseApi implements ProviderInterface
 {
 
     /**
@@ -51,7 +53,7 @@ class ImApi extends ImBaseApi
         //将消息序列化为json串
         $data = json_encode($msg);
 
-        $ret = self::api('im_open_login_svc', 'account_import', $identifier, '', $data);
+        $ret = parent::api('im_open_login_svc', 'account_import', $data);
         $ret = json_decode($ret, true);
         return $ret;
     }
@@ -95,7 +97,7 @@ class ImApi extends ImBaseApi
         $msg = ['To_Account' => $account];
         //将消息序列化为json串
         $data = json_encode($msg);
-        $ret = parent::api('openim', 'querystate', $this->identifier, $this->user_sig, $data);
+        $ret = parent::api('openim', 'querystate', $data);
 
         $ret = json_decode($ret, true);
         return $ret;

@@ -44,7 +44,7 @@ class ImBaseApi
         if(!$this->private_key){
             throw new \Exception('Please set private_key');
         }
-        #获取usersig
+        #获取user_sig
         $this->user_sig = self::getSignature($this->identifier);
     }
 
@@ -142,7 +142,7 @@ class ImBaseApi
         #将消息序列化为json串
         $req_data = json_encode($msg);
 
-        $ret = self::api('openim', 'sendmsg', $this->identifier, $this->usersig, $req_data);
+        $ret = self::api('openim', 'sendmsg', $req_data);
         $ret = json_decode($ret, true);
         return $ret;
     }
@@ -171,21 +171,20 @@ class ImBaseApi
      * 构造访问REST服务器的参数,并访问REST接口
      * @param string $server_name 服务名
      * @param string $cmd_name 命令名
-     * @param string $identifier 用户名
-     * @param string $user_sig 用来鉴权的usersig
      * @param string $req_data 传递的json结构
      * $param bool $print_flag 是否打印请求，默认为打印
      * @return string $out 返回的签名字符串
      */
-    public function api($service_name, $cmd_name, $identifier, $user_sig, $req_data, $print_flag = true)
+    public function api($service_name, $cmd_name, $req_data, $print_flag = true)
     {
         //$req_tmp用来做格式化输出
         $req_tmp = json_decode($req_data, true);
         # 构建HTTP请求参数，具体格式请参考 REST API接口文档 (http://avc.qcloud.com/wiki/im/)(即时通信云-数据管理REST接口)
-        $parameter =  "usersig=" . $user_sig
-            . "&identifier=" . $identifier
+        $parameter =  "usersig=" . $this->user_sig
+            . "&identifier=" . $this->identifier
             . "&sdkappid=" . $this->app_id
             . "&contenttype=" . $this->content_type;
+
         $url = $this->http_type . $this->im_yun_url . '/' . $this->version . '/' . $service_name . '/' .$cmd_name . '?' . $parameter;
 
         if($print_flag){
@@ -196,43 +195,9 @@ class ImBaseApi
             echo self::jsonFormat($req_tmp);
             echo "\n";
         }
+
         $ret = self::sendHttpRequset('https', 'post', $url, $req_data);
         return $ret;
-    }
-
-    /**
-     * 构造访问REST服务器参数,并发访问REST服务器
-     * @param string $server_name 服务名
-     * @param string $cmd_name 命令名
-     * @param string $identifier 用户名
-     * @param string $usersig 用来鉴权的usersig
-     * @param string $req_data 传递的json结构
-     * $param bool $print_flag 是否打印请求，默认为打印
-     * @return string $out 返回的签名字符串
-     */
-    public function multi_api($service_name, $cmd_name, $identifier, $usersig, $req_data, $print_flag = true)
-    {
-        //$req_tmp用来做格式化控制台输出,同时作为多路访问需要的数组结构
-        $req_tmp = json_decode($req_data, true);
-        # 构建HTTP请求参数，具体格式请参考 REST API接口文档 (http://avc.qcloud.com/wiki/im/)(即时通信云-数据管理REST接口)
-        $parameter =  "usersig=" . $this->usersig
-            . "&identifier=" . $this->identifier
-            . "&sdkappid=" . $this->sdkappid
-            . "&contenttype=" . $this->contenttype;
-
-        $url = $this->http_type . $this->im_yun_url . '/' . $this->version . '/' . $service_name . '/' .$cmd_name . '?' . $parameter;
-
-        if($print_flag){
-            echo "Request Url:\n";
-            echo $url;
-            echo "\n";
-            echo "Request Body:\n";
-            echo self::jsonFormat($req_tmp);
-            echo "\n";
-        }
-        $ret = self::sendHttpRequset('https', 'post', $url, $req_tmp);
-        return $ret;
-
     }
 
     /**

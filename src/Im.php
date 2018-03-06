@@ -9,9 +9,7 @@
 namespace Ooooliu\Im;
 
 
-use Ooooliu\Im\Contracts\ProviderInterface;
-
-class Im implements ProviderInterface
+class Im
 {
     public $dirver;
 
