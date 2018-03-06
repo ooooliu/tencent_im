@@ -22,4 +22,13 @@ interface ProviderInterface
      */
     public function sendMsg($from_id, $to_id, $content);
 
+    /**
+     * send batch message.
+     *
+     * @param array $account_list
+     * @param $text_content
+     * @return mixed
+     */
+    public function batchSendMsg($account_list = [], $text_content);
+
 }

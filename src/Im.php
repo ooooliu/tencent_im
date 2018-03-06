@@ -57,4 +57,60 @@ class Im
     {
         return $this->dirver->sendMsg($from_id, $to_id, $content);
     }
+
+    /**
+     * 发送批量消息
+     * @param array $account_list
+     * @param $text_content
+     * @return mixed
+     */
+    public function batchSendMsg($account_list = [], $text_content)
+    {
+        return $this->dirver->batchSendMsg($account_list = [], $text_content);
+    }
+
+    /**
+     * 创建群组
+     * @param $owner_id
+     * @param $group_name
+     * @return mixed
+     */
+    public function createGroup($owner_id, $group_name)
+    {
+        return $this->dirver->createGroup($owner_id, $group_name);
+    }
+
+    /**
+     * 发送群组消息
+     * @param $account_id
+     * @param $group_id
+     * @param $text_content
+     * @return mixed
+     */
+    public function sendGroupMsg($account_id, $group_id, $text_content)
+    {
+        return $this->dirver->sendGroupMsg($account_id, $group_id, $text_content);
+    }
+
+    /**
+     * 在群组中发送系统通知
+     * @param $group_id
+     * @param $text_content
+     * @param $receiver_id
+     * @return mixed
+     */
+    public function sendGroupSystemNotification($group_id, $text_content, $receiver_id)
+    {
+        return $this->dirver->sendGroupSystemNotification($group_id, $text_content, $receiver_id);
+    }
+
+    /**
+     * 查询用户是否在线
+     * @param array $account
+     * @return mixed
+     */
+    public function queryState($account = [])
+    {
+        return $this->dirver->queryState($account = []);
+    }
 }

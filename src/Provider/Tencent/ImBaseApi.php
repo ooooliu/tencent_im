@@ -148,9 +148,111 @@ class ImBaseApi
     }
 
     /**
+     * 批量发送消息
+     * @param $account_list
+     * @param $msg_content
+     * @return mixed|string
+     */
+    public function openImBatchSendMsg($account_list, $msg_content)
+    {
+        #构造新消息
+        $msg = [
+            'To_Account' => $account_list,
+            'MsgRandom' => rand(1, 65535),
+            'MsgBody' => $msg_content,
+        ];
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+
+        $ret = self::api('openim', 'batchsendmsg', $req_data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+
+    /**
+     * 创建群组
+     * @param $group_type
+     * @param $group_name
+     * @param $owner_id
+     * @param $info_set
+     * @param $mem_list
+     * @return mixed|string
+     */
+    public function createGroupApi($group_type, $group_name, $owner_id, $info_set, $mem_list)
+    {
+        #构造新消息
+        $msg = array(
+            'Type' => $group_type,
+            'Name' => $group_name,
+            'Owner_Account' => $owner_id,
+            'GroupId' => $info_set['group_id'],
+            'Introduction' => $info_set['introduction'],
+            'Notification' => $info_set['notification'],
+            'FaceUrl' => $info_set['face_url'],
+            'MaxMemberCount' => $info_set['max_member_num'],
+            //	'ApplyJoinOption' => $info_set['apply_join'],
+            'MemberList' => $mem_list
+        );
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+
+        $ret = self::api('group_open_http_svc', 'create_group', $req_data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+
+    /**
+     * 发送群组消息
+     * @param $account_id
+     * @param $group_id
+     * @param $msg_content
+     * @return mixed|string
+     */
+    public function sendGroupMsgApi($account_id, $group_id, $msg_content)
+    {
+        #构造新消息
+        $msg = [
+            'GroupId' => $group_id,
+            'From_Account' => $account_id,
+            'Random' => rand(1, 65535),
+            'MsgBody' => $msg_content
+        ];
+
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+
+        $ret = self::api('group_open_http_svc', 'send_group_msg', $req_data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+
+    /**
+     * 在群组中发送系统通知
+     * @param $group_id
+     * @param $content
+     * @param $receiver_list
+     * @return mixed|string
+     */
+    public function sendGroupSystemNotificationApi($group_id, $content, $receiver_list = [])
+    {
+        #构造新消息
+        $msg = [
+            'GroupId' => $group_id,
+            'ToMembers_Account' => $receiver_list,
+            'Content' => $content,
+        ];
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+
+        $ret = self::api("group_open_http_svc", "send_group_system_notification", $req_data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+
+    /**
      * 判断操作系统位数
      */
-    function is_64bit() {
+    protected function is_64bit() {
         $int = "9223372036854775807";
         $int = intval($int);
         if ($int == 9223372036854775807) {
@@ -175,7 +277,7 @@ class ImBaseApi
      * $param bool $print_flag 是否打印请求，默认为打印
      * @return string $out 返回的签名字符串
      */
-    public function api($service_name, $cmd_name, $req_data, $print_flag = true)
+    protected function api($service_name, $cmd_name, $req_data, $print_flag = true)
     {
         //$req_tmp用来做格式化输出
         $req_tmp = json_decode($req_data, true);
@@ -204,7 +306,7 @@ class ImBaseApi
      * json_formart辅助函数
      * @param String $val 数组元素
      */
-    function jsonFormatProtect(&$val)
+    protected function jsonFormatProtect(&$val)
     {
         if($val!==true && $val!==false && $val!==null)
         {
@@ -218,7 +320,7 @@ class ImBaseApi
      * @param null $indent
      * @return string
      */
-    public function jsonFormat($data, $indent = null)
+    protected function jsonFormat($data, $indent = null)
     {
         // 对数组中每个元素递归进行urlencode操作，保护中文字符
         array_walk_recursive($data, [$this, 'jsonFormatProtect']);
@@ -272,7 +374,7 @@ class ImBaseApi
      * @param string $data 请求的数据
      * @return mixed|string
      */
-    public static function sendHttpRequset($http_type, $method, $url, $data)
+    private static function sendHttpRequset($http_type, $method, $url, $data)
     {
         $ch = curl_init();
         if (strstr($http_type, 'https')) {

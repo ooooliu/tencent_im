@@ -125,4 +125,96 @@ class ImApi extends ImBaseApi implements ProviderInterface
         $ret = json_decode($ret, true);
         return $ret;
     }
+
+    /**
+     * 批量发信息
+     * @param $account_list ['a', 'b', 'c' ..]
+     * @param $text_content
+     * @return mixed
+     */
+    public function batchSendMsg($account_list = [], $text_content)
+    {
+        if(empty($account_list) || !is_array($account_list)){
+            throw new \Exception('account_list is wrong');
+        }
+
+        #构造高级接口所需参数
+        $msg_content = [];
+        //创建array 所需元素
+        $msg_content_elem = [
+            'MsgType' => 'TIMTextElem',       //文本类型
+            'MsgContent' => [
+                'Text' => $text_content,      //hello 为文本信息
+            ]
+        ];
+        //将创建的元素$msg_content_elem, 加入array $msg_content
+        array_push($msg_content, $msg_content_elem);
+
+        $ret = parent::openImBatchSendMsg($account_list, $msg_content);
+        return $ret;
+    }
+
+    /**
+     * 创建群组
+     * @param $owner_id
+     * @param $group_name
+     * @param string $group_type
+     * @return mixed|string
+     */
+    public function createGroup($owner_id, $group_name, $group_type = 'Public')
+    {
+        #构造高级接口所需参数
+        $info_set = [
+            'group_id' => null,             //用户自定义的群组ID(选填)
+            'introduction' => null,         //群简介(选填)
+            'notification' => null,         //群公告(选填)
+            'face_url' => null,             //群头像
+            'max_member_num' => 500
+        ];
+        $mem_list = [];
+
+        $ret = parent::createGroupApi($group_type, $group_name, $owner_id, $info_set, $mem_list);
+        return $ret;
+    }
+
+    /**
+     * 发送群组消息
+     * @param $account_id
+     * @param $group_id 腾讯群组ID
+     * @param $text_content
+     * @return mixed|string
+     */
+    public function sendGroupMsg($account_id, $group_id, $text_content)
+    {
+        #构造高级接口所需参数
+        $msg_content = [];
+        //创建array 所需元素
+        $msg_content_elem = [
+            'MsgType' => 'TIMTextElem',                 //文本类型
+            'MsgContent' => [
+                'Text' => $text_content,                //hello 为文本信息
+            ]
+        ];
+        array_push($msg_content, $msg_content_elem);
+        $ret = parent::sendGroupMsgApi($account_id, $group_id, $msg_content);
+        return $ret;
+    }
+
+    /**
+     * 在群组中发送系统通知
+     * @param $group_id
+     * @param $text_content
+     * @param $receiver_id
+     * @return mixed|string
+     */
+    public function sendGroupSystemNotification($group_id, $text_content, $receiver_id)
+    {
+        #构造高级接口所需参数
+        $receiver_list = [];
+        if($receiver_id != null){
+            array_push($receiver_list, $receiver_id);
+        }
+        $ret = parent::sendGroupSystemNotificationApi($group_id, $text_content, $receiver_list);
+        return $ret;
+    }
 }
