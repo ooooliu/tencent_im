@@ -128,9 +128,10 @@ class ImApi extends ImBaseApi implements ProviderInterface
 
     /**
      * 批量发信息
-     * @param $account_list ['a', 'b', 'c' ..]
+     * @param array $account_list
      * @param $text_content
-     * @return mixed
+     * @return mixed|string
+     * @throws \Exception
      */
     public function batchSendMsg($account_list = [], $text_content)
     {
@@ -215,6 +216,45 @@ class ImApi extends ImBaseApi implements ProviderInterface
             array_push($receiver_list, $receiver_id);
         }
         $ret = parent::sendGroupSystemNotificationApi($group_id, $text_content, $receiver_list);
+        return $ret;
+    }
+
+    /**
+     * 增加群组成员
+     * @param $group_id
+     * @param $member_list
+     * @param int $silence 是否静默加人。0：非静默加人；1：静默加人。不填该字段默认为0
+     * @return mixed|string
+     * @throws \Exception
+     */
+    public function addGroupMember($group_id, $member_list, $silence = 0)
+    {
+        $max = 500;
+
+        if(!is_array($member_list)){
+            $member_list = explode(',', $member_list);
+        }
+
+        if(count($member_list) > $max){
+            throw new \Exception('The maximum number of users can not be over 500');
+        }
+
+        #构造新消息
+        $mem_list =[];
+        foreach ($member_list as $member_id){
+            $mem_list[]['Member_Account'] = $member_id;
+        }
+
+        $msg = [
+            'GroupId' => $group_id,
+            'MemberList' => $mem_list,
+            'Silence' => $silence
+        ];
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+
+        $ret = parent::api('group_open_http_svc', 'add_group_member', $req_data);
+        $ret = json_decode($ret, true);
         return $ret;
     }
 }

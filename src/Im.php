@@ -139,4 +139,16 @@ class Im
     {
         return $this->dirver->forgetSignatureCache($identifier);
     }
+
+    /**
+     * 增加群组成员
+     * @param $group_id
+     * @param $member_list string:user; array:[user1,user2,user3..]
+     * @param int $silence 是否静默加人。0：非静默加人；1：静默加人。不填该字段默认为0
+     * @return mixed
+     */
+    public function addGroupMember($group_id, $member_list, $silence = 0)
+    {
+        return $this->dirver->addGroupMember($group_id, $member_list, $silence);
+    }
 }
