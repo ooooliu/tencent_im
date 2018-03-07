@@ -13,8 +13,14 @@ class Im
 {
     public $dirver;
 
-    public function __construct($provider)
+    public function __construct()
     {
+        $provider = config('im.driver');
+
+        if(!$provider){
+            throw new \Exception('Config driver is not null');
+        }
+
         if(!file_exists(__DIR__ . '/Provider/' . ucfirst($provider) . '/ImApi.php')){
             throw new \Exception('Provider ' . $provider . ' is not found');
         }
@@ -111,6 +117,26 @@ class Im
      */
     public function queryState($account = [])
     {
-        return $this->dirver->queryState($account = []);
+        return $this->dirver->queryState($account);
+    }
+
+    /**
+     * 获取用户user_sig
+     * @param $identifier
+     * @return mixed
+     */
+    public function getSignature($identifier)
+    {
+        return $this->dirver->getSignature($identifier);
+    }
+
+    /**
+     * 删除用户user_sig缓存
+     * @param $identifier
+     * @return mixed
+     */
+    public function forgetSignatureCache($identifier)
+    {
+        return $this->dirver->forgetSignatureCache($identifier);
     }
 }

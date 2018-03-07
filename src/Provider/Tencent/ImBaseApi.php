@@ -18,7 +18,7 @@ class ImBaseApi
     protected $user_sig;
     #一个月请求一次(注意：生成的sig有效期为180天，开发者需要在sig过期前，重新生成sig)
     protected $expiry = 30 * 24 * 60;
-    protected $usersig_cache_key = 'usersig';
+    protected $usersig_cache_key = 'usersig_';
 
     #开放IM https接口参数, 一般不需要修改
     protected $http_type = 'https://';
@@ -62,7 +62,9 @@ class ImBaseApi
             throw new \Exception('Please set usersig_cache_key');
         }
 
-        $user_sig = \Cache::get($this->usersig_cache_key);
+        $chache_key = $this->usersig_cache_key . $identifier;
+
+        $user_sig = \Cache::get($chache_key);
 
         if($user_sig) return $user_sig;
 
@@ -94,7 +96,7 @@ class ImBaseApi
             throw new \Exception('获取usrsig失败, 请确保TimRestApiConfig.json配置信息正确');
         }
 
-        \Cache::put($this->usersig_cache_key, $ret, $this->expiry);
+        \Cache::put($chache_key, $ret, $this->expiry);
         return $ret;
     }
 
@@ -102,9 +104,9 @@ class ImBaseApi
      * 清除usersig缓存
      * @return bool
      */
-    public function forgetSignatureCache()
+    public function forgetSignatureCache($identifier)
     {
-        return \Cache::delete($this->usersig_cache_key);
+        return \Cache::delete($this->usersig_cache_key . $identifier);
     }
 
     /**
