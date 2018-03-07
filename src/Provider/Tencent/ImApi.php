@@ -70,6 +70,13 @@ class ImApi extends ImBaseApi implements ProviderInterface
             throw new \Exception('Account is wrong');
         }
 
+        #最多一次批量添加100
+        $max = 100;
+
+        if(count($accounts) > $max){
+            throw new \Exception('The maximum number of users can not be over 100');
+        }
+
         $msg = [
             'Accounts' => $accounts
         ];
@@ -229,6 +236,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
      */
     public function addGroupMember($group_id, $member_list, $silence = 0)
     {
+        #最多一次批量添加500
         $max = 500;
 
         if(!is_array($member_list)){
