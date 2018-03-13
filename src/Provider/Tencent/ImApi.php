@@ -46,7 +46,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
     {
         //构造新消息
         $msg = [
-            'Identifier' => $account,
+            'Identifier' => (string)$account,
             'Nick' => $nick_name,
             'FaceUrl' => $face_url
         ];
@@ -78,7 +78,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
         }
 
         $msg = [
-            'Accounts' => $accounts
+            'Accounts' => (string)$accounts
         ];
         //将消息序列化为json串
         $data = json_encode($msg);
@@ -103,7 +103,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
         $msg_content_elem = [
             'MsgType' => 'TIMTextElem',       //文本类型
             'MsgContent' => [
-                'Text' => $content,           //hello 为文本信息
+                'Text' => (string)$content,           //hello 为文本信息
             ]
         ];
         //将创建的元素$msg_content_elem, 加入array $msg_content
@@ -124,7 +124,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
         if(empty($account)){
             throw new \Exception('Account is not null');
         }
-        $msg = ['To_Account' => $account];
+        $msg = ['To_Account' => (string)$account];
         //将消息序列化为json串
         $data = json_encode($msg);
         $ret = parent::api('openim', 'querystate', $data);
@@ -152,7 +152,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
         $msg_content_elem = [
             'MsgType' => 'TIMTextElem',       //文本类型
             'MsgContent' => [
-                'Text' => $text_content,      //hello 为文本信息
+                'Text' => (string)$text_content,      //hello 为文本信息
             ]
         ];
         //将创建的元素$msg_content_elem, 加入array $msg_content
@@ -200,7 +200,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
         $msg_content_elem = [
             'MsgType' => 'TIMTextElem',                 //文本类型
             'MsgContent' => [
-                'Text' => $text_content,                //hello 为文本信息
+                'Text' => (string)$text_content,                //hello 为文本信息
             ]
         ];
         array_push($msg_content, $msg_content_elem);
