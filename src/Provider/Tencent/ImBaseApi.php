@@ -134,12 +134,12 @@ class ImBaseApi
     {
         #构造新消息
         $msg = [
-            'To_Account' => $from_id,
+            'To_Account' => (string)$from_id,
             'MsgSeq' => rand(1, 65535),
             'MsgRandom' => rand(1, 65535),
             'MsgTimeStamp' => time(),
             'MsgBody' => $msg_content,
-            'From_Account' => $to_id
+            'From_Account' => (string)$to_id
         ];
         #将消息序列化为json串
         $req_data = json_encode($msg);
@@ -159,7 +159,7 @@ class ImBaseApi
     {
         #构造新消息
         $msg = [
-            'To_Account' => $account_list,
+            'To_Account' => (string)$account_list,
             'MsgRandom' => rand(1, 65535),
             'MsgBody' => $msg_content,
         ];
@@ -186,8 +186,8 @@ class ImBaseApi
         $msg = array(
             'Type' => $group_type,
             'Name' => $group_name,
-            'Owner_Account' => $owner_id,
-            'GroupId' => $info_set['group_id'],
+            'Owner_Account' => (string)$owner_id,
+            'GroupId' => (string)$info_set['group_id'],
             'Introduction' => $info_set['introduction'],
             'Notification' => $info_set['notification'],
             'FaceUrl' => $info_set['face_url'],
@@ -214,8 +214,8 @@ class ImBaseApi
     {
         #构造新消息
         $msg = [
-            'GroupId' => $group_id,
-            'From_Account' => $account_id,
+            'GroupId' => (string)$group_id,
+            'From_Account' => (string)$account_id,
             'Random' => rand(1, 65535),
             'MsgBody' => $msg_content
         ];
@@ -239,7 +239,7 @@ class ImBaseApi
     {
         #构造新消息
         $msg = [
-            'GroupId' => $group_id,
+            'GroupId' => (string)$group_id,
             'ToMembers_Account' => $receiver_list,
             'Content' => $content,
         ];
@@ -279,7 +279,7 @@ class ImBaseApi
      * $param bool $print_flag 是否打印请求，默认为打印
      * @return string $out 返回的签名字符串
      */
-    protected function api($service_name, $cmd_name, $req_data, $print_flag = true)
+    protected function api($service_name, $cmd_name, $req_data, $print_flag = false)
     {
         //$req_tmp用来做格式化输出
         $req_tmp = json_decode($req_data, true);
