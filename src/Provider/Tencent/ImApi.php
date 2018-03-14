@@ -124,7 +124,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
         if(empty($account)){
             throw new \Exception('Account is not null');
         }
-        $msg = ['To_Account' => (string)$account];
+        $msg = ['To_Account' => $account];
         //将消息序列化为json串
         $data = json_encode($msg);
         $ret = parent::api('openim', 'querystate', $data);
