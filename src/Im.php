@@ -135,8 +135,11 @@ class Im
      * @param $identifier
      * @return mixed
      */
-    public function forgetSignatureCache($identifier)
+    public function forgetSignatureCache($identifier = '')
     {
+        if(empty($identifier)){
+            $identifier = config('im.' . config('im.driver') . '.identifier');
+        }
         return $this->dirver->forgetSignatureCache($identifier);
     }
 
