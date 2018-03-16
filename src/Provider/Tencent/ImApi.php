@@ -265,4 +265,37 @@ class ImApi extends ImBaseApi implements ProviderInterface
         $ret = json_decode($ret, true);
         return $ret;
     }
+
+    /**
+     * 获取用户再群组中的角色
+     * @param $group_id
+     * @param $member_list
+     * @return mixed|string
+     * @throws \Exception
+     */
+    public function getRoleInGroup($group_id, $member_list)
+    {
+        #最多支持500个
+        $max = 500;
+
+        if(!is_array($member_list)){
+            $member_list = explode(',', $member_list);
+        }
+
+        if(count($member_list) > $max){
+            throw new \Exception('The maximum number of users can not be over 500');
+        }
+
+        $msg = array(
+            'GroupId' => $group_id,
+            'User_Account' => $member_list,
+        )
+        ;
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+
+        $ret = parent::api('group_open_http_svc', 'get_role_in_group', $req_data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
 }

@@ -154,4 +154,15 @@ class Im
     {
         return $this->dirver->addGroupMember($group_id, $member_list, $silence);
     }
+
+    /**
+     * 获取用户再群组中的角色
+     * @param $group_id
+     * @param $member_list
+     * @return mixed
+     */
+    public function getRoleInGroup($group_id, $member_list)
+    {
+        return $this->dirver->getRoleInGroup($group_id, $member_list);
+    }
 }
