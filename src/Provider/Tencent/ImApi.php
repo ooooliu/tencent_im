@@ -286,15 +286,59 @@ class ImApi extends ImBaseApi implements ProviderInterface
             throw new \Exception('The maximum number of users can not be over 500');
         }
 
-        $msg = array(
+        $msg = [
             'GroupId' => $group_id,
             'User_Account' => $member_list,
-        )
-        ;
+        ];
         #将消息序列化为json串
         $req_data = json_encode($msg);
 
         $ret = parent::api('group_open_http_svc', 'get_role_in_group', $req_data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+
+    /**
+     * 批量禁言和取消禁言
+     * @param $group_id
+     * @param $member_id
+     * @param $second [0:取消禁言 大于0:设置禁言时间]
+     * @return mixed|string
+     */
+    public function groupForbidSendMsg($group_id, $member_list, $second = 0)
+    {
+        if(!is_array($member_list)){
+            $member_list = explode(',', $member_list);
+        }
+
+        $msg = [
+            'GroupId' => $group_id,
+            'Members_Account' => $member_list,
+            'ShutUpTime' => $second
+        ];
+
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+
+        $ret = parent::api('group_open_http_svc', 'forbid_send_msg', $req_data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+
+    /**
+     * 获取群组被禁言用户列表
+     * @param $group_id
+     * @return mixed|string
+     */
+    public function getGroupShuttedUin($group_id)
+    {
+        $msg = [
+            'GroupId' => $group_id
+        ];
+
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+        $ret = parent::api('group_open_http_svc', 'get_group_shutted_uin', $req_data);
         $ret = json_decode($ret, true);
         return $ret;
     }

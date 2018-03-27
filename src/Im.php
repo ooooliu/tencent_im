@@ -11,7 +11,7 @@ namespace Ooooliu\Im;
 
 class Im
 {
-    public $dirver;
+    public $driver;
 
     public function __construct()
     {
@@ -27,7 +27,7 @@ class Im
 
         $class = __NAMESPACE__ . '\\Provider\\'  .ucfirst($provider) . '\\ImApi';
 
-        $this->dirver = new $class();
+        $this->driver = new $class();
     }
 
     /**
@@ -39,7 +39,7 @@ class Im
      */
     public function registerUser($account, $nick_name, $face_url)
     {
-        return $this->dirver->registerUser($account, $nick_name, $face_url);
+        return $this->driver->registerUser($account, $nick_name, $face_url);
     }
 
     /**
@@ -49,7 +49,7 @@ class Im
      */
     public function multRegisterUser($accounts = [])
     {
-        return $this->dirver->multRegisterUser($accounts);
+        return $this->driver->multRegisterUser($accounts);
     }
 
     /**
@@ -61,7 +61,7 @@ class Im
      */
     public function sendMsg($from_id, $to_id, $content)
     {
-        return $this->dirver->sendMsg($from_id, $to_id, $content);
+        return $this->driver->sendMsg($from_id, $to_id, $content);
     }
 
     /**
@@ -72,7 +72,7 @@ class Im
      */
     public function batchSendMsg($account_list = [], $text_content)
     {
-        return $this->dirver->batchSendMsg($account_list = [], $text_content);
+        return $this->driver->batchSendMsg($account_list = [], $text_content);
     }
 
     /**
@@ -83,7 +83,7 @@ class Im
      */
     public function createGroup($owner_id, $group_name)
     {
-        return $this->dirver->createGroup($owner_id, $group_name);
+        return $this->driver->createGroup($owner_id, $group_name);
     }
 
     /**
@@ -95,7 +95,7 @@ class Im
      */
     public function sendGroupMsg($account_id, $group_id, $text_content)
     {
-        return $this->dirver->sendGroupMsg($account_id, $group_id, $text_content);
+        return $this->driver->sendGroupMsg($account_id, $group_id, $text_content);
     }
 
     /**
@@ -107,7 +107,7 @@ class Im
      */
     public function sendGroupSystemNotification($group_id, $text_content, $receiver_id)
     {
-        return $this->dirver->sendGroupSystemNotification($group_id, $text_content, $receiver_id);
+        return $this->driver->sendGroupSystemNotification($group_id, $text_content, $receiver_id);
     }
 
     /**
@@ -117,7 +117,7 @@ class Im
      */
     public function queryState($account = [])
     {
-        return $this->dirver->queryState($account);
+        return $this->driver->queryState($account);
     }
 
     /**
@@ -127,7 +127,7 @@ class Im
      */
     public function getSignature($identifier)
     {
-        return $this->dirver->getSignature($identifier);
+        return $this->driver->getSignature($identifier);
     }
 
     /**
@@ -140,7 +140,7 @@ class Im
         if(empty($identifier)){
             $identifier = config('im.' . config('im.driver') . '.identifier');
         }
-        return $this->dirver->forgetSignatureCache($identifier);
+        return $this->driver->forgetSignatureCache($identifier);
     }
 
     /**
@@ -152,7 +152,7 @@ class Im
      */
     public function addGroupMember($group_id, $member_list, $silence = 0)
     {
-        return $this->dirver->addGroupMember($group_id, $member_list, $silence);
+        return $this->driver->addGroupMember($group_id, $member_list, $silence);
     }
 
     /**
@@ -163,6 +163,28 @@ class Im
      */
     public function getRoleInGroup($group_id, $member_list)
     {
-        return $this->dirver->getRoleInGroup($group_id, $member_list);
+        return $this->driver->getRoleInGroup($group_id, $member_list);
+    }
+
+    /**
+     * 批量禁言和取消禁言
+     * @param $group_id
+     * @param $member_list
+     * @param int $second
+     * @return mixed
+     */
+    public function groupForbidSendMsg($group_id, $member_list, $second = 0)
+    {
+        return $this->driver->groupForbidSendMsg($group_id, $member_list, $second);
+    }
+
+    /**
+     * 获取群组被禁言用户列表
+     * @param $group_id
+     * @return mixed
+     */
+    public function getGroupShuttedUin($group_id)
+    {
+        return $this->driver->getGroupShuttedUin($group_id);
     }
 }
