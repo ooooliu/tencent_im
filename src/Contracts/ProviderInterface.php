@@ -31,4 +31,24 @@ interface ProviderInterface
      */
     public function batchSendMsg($account_list = [], $text_content);
 
+    /**
+     * add group member
+     *
+     * @param $group_id
+     * @param $member_list
+     * @param int $silence
+     * @return mixed
+     */
+    public function addGroupMember($group_id, $member_list, $silence = 0);
+
+    /**
+     * delete group member
+     *
+     * @param $group_id
+     * @param $member_list
+     * @param int $silence
+     * @return mixed
+     */
+    public function deleteGroupMember($group_id, $member_list, $silence = 0);
+
 }

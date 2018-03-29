@@ -187,4 +187,16 @@ class Im
     {
         return $this->driver->getGroupShuttedUin($group_id);
     }
+
+    /**
+     * 删除群组成员
+     * @param $group_id
+     * @param $member_list
+     * @param int $silence
+     * @return mixed
+     */
+    public function deleteGroupMember($group_id, $member_list, $silence = 0)
+    {
+        return $this->driver->deleteGroupMember($group_id, $member_list, $silence);
+    }
 }

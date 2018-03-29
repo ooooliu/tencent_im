@@ -301,7 +301,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
     /**
      * 批量禁言和取消禁言
      * @param $group_id
-     * @param $member_id
+     * @param $member_list
      * @param $second [0:取消禁言 大于0:设置禁言时间]
      * @return mixed|string
      */
@@ -339,6 +339,41 @@ class ImApi extends ImBaseApi implements ProviderInterface
         #将消息序列化为json串
         $req_data = json_encode($msg);
         $ret = parent::api('group_open_http_svc', 'get_group_shutted_uin', $req_data);
+        $ret = json_decode($ret, true);
+        return $ret;
+    }
+
+    /**
+     * 删除群组成员
+     * @param $group_id
+     * @param $member_list
+     * @param int $silence 是否静默删人。0：非静默删人；1：静默删人。不填该字段默认为0。
+     * @return mixed|string
+     * @throws \Exception
+     */
+    public function deleteGroupMember($group_id, $member_list, $silence = 0)
+    {
+        #最多支持500个
+        $max = 500;
+
+        if(!is_array($member_list)){
+            $member_list = explode(',', $member_list);
+        }
+
+        if(count($member_list) > $max){
+            throw new \Exception('The maximum number of users can not be over 500');
+        }
+
+        $msg = [
+            'GroupId' => $group_id,
+            'MemberToDel_Account' => $member_list,
+            'Silence' => $silence
+        ];
+
+        #将消息序列化为json串
+        $req_data = json_encode($msg);
+
+        $ret = parent::api('group_open_http_svc', 'delete_group_member', $req_data);
         $ret = json_decode($ret, true);
         return $ret;
     }
