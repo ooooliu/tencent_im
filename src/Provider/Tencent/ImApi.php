@@ -78,7 +78,7 @@ class ImApi extends ImBaseApi implements ProviderInterface
         }
 
         $msg = [
-            'Accounts' => (string)$accounts
+            'Accounts' => $accounts
         ];
         //将消息序列化为json串
         $data = json_encode($msg);
