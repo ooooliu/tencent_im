@@ -37,7 +37,7 @@ class Im
      * @param $face_url
      * @return mixed
      */
-    public function registerUser($account, $nick_name, $face_url)
+    public function registerUser($account, $nick_name, $face_url = '')
     {
         return $this->driver->registerUser($account, $nick_name, $face_url);
     }
