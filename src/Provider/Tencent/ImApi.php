@@ -93,19 +93,28 @@ class ImApi extends ImBaseApi implements ProviderInterface
      * @param $from_id
      * @param $to_id
      * @param $content
-     * @return mixed
+     * @param array $ext
+     * @param string $msg_type
+     * @return mixed|string
      */
-    public function sendMsg($from_id, $to_id, $content)
+    public function sendMsg($from_id, $to_id, $content, $ext = [], $msg_type = 'TIMTextElem')
     {
         #构造高级接口所需参数
         $msg_content = [];
         //创建array 所需元素
         $msg_content_elem = [
-            'MsgType' => 'TIMTextElem',       //文本类型
+            'MsgType' => $msg_type,       //文本类型
             'MsgContent' => [
                 'Text' => (string)$content,           //hello 为文本信息
             ]
         ];
+
+        //扩展消息类型(自定义消息类型)
+        if($msg_type == 'TIMCustomElem'){
+            $ext = is_array($ext) ? json_encode($ext) : (string)$ext;
+            $msg_content_elem['MsgContent']['Data'] = $ext;
+        }
+
         //将创建的元素$msg_content_elem, 加入array $msg_content
         array_push($msg_content, $msg_content_elem);
 
@@ -137,10 +146,12 @@ class ImApi extends ImBaseApi implements ProviderInterface
      * 批量发信息
      * @param array $account_list
      * @param $text_content
+     * @param array $ext
+     * @param string $msg_type
      * @return mixed|string
      * @throws \Exception
      */
-    public function batchSendMsg($account_list = [], $text_content)
+    public function batchSendMsg($account_list = [], $text_content, $ext = [], $msg_type = 'TIMTextElem')
     {
         if(empty($account_list) || !is_array($account_list)){
             throw new \Exception('account_list is wrong');
@@ -150,11 +161,18 @@ class ImApi extends ImBaseApi implements ProviderInterface
         $msg_content = [];
         //创建array 所需元素
         $msg_content_elem = [
-            'MsgType' => 'TIMTextElem',       //文本类型
+            'MsgType' => $msg_type,       //文本类型
             'MsgContent' => [
                 'Text' => (string)$text_content,      //hello 为文本信息
             ]
         ];
+
+        //扩展消息类型(自定义消息类型)
+        if($msg_type == 'TIMCustomElem'){
+            $ext = is_array($ext) ? json_encode($ext) : (string)$ext;
+            $msg_content_elem['MsgContent']['Data'] = $ext;
+        }
+
         //将创建的元素$msg_content_elem, 加入array $msg_content
         array_push($msg_content, $msg_content_elem);
 
@@ -190,9 +208,11 @@ class ImApi extends ImBaseApi implements ProviderInterface
      * @param $account_id
      * @param $group_id 腾讯群组ID
      * @param $text_content
+     * @param $ext
+     * @param $msg_type
      * @return mixed|string
      */
-    public function sendGroupMsg($account_id, $group_id, $text_content)
+    public function sendGroupMsg($account_id, $group_id, $text_content, $ext = [], $msg_type = 'TIMTextElem')
     {
         #构造高级接口所需参数
         $msg_content = [];
@@ -200,9 +220,16 @@ class ImApi extends ImBaseApi implements ProviderInterface
         $msg_content_elem = [
             'MsgType' => 'TIMTextElem',                 //文本类型
             'MsgContent' => [
-                'Text' => (string)$text_content,                //hello 为文本信息
+                'Text' => (string)$text_content,        //hello 为文本信息
             ]
         ];
+
+        //扩展消息类型(自定义消息类型)
+        if($msg_type == 'TIMCustomElem'){
+            $ext = is_array($ext) ? json_encode($ext) : (string)$ext;
+            $msg_content_elem['MsgContent']['Data'] = $ext;
+        }
+
         array_push($msg_content, $msg_content_elem);
         $ret = parent::sendGroupMsgApi($account_id, $group_id, $msg_content);
         return $ret;
