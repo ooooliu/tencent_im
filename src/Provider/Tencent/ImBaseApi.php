@@ -134,12 +134,12 @@ class ImBaseApi
     {
         #构造新消息
         $msg = [
-            'To_Account' => (string)$from_id,
+            'To_Account' => (string)$to_id,
             'MsgSeq' => rand(1, 65535),
             'MsgRandom' => rand(1, 65535),
             'MsgTimeStamp' => time(),
             'MsgBody' => $msg_content,
-            'From_Account' => (string)$to_id
+            'From_Account' => (string)$from_id
         ];
         #将消息序列化为json串
         $req_data = json_encode($msg);
